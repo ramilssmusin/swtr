@@ -1,8 +1,10 @@
 package com.example.swtr.controller;
 
 import com.example.swtr.domain.Message;
+import com.example.swtr.domain.User;
 import com.example.swtr.repos.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -31,8 +33,11 @@ public class MainController {
     }
 
     @PostMapping("/main")
-    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model){
-        Message message = new Message(text, tag);
+    public String add(
+            @AuthenticationPrincipal User user,
+            @RequestParam String text,
+            @RequestParam String tag, Map<String, Object> model){
+        Message message = new Message(text, tag, user);
         messageRepository.save(message);
 
         Iterable<Message> messages = messageRepository.findAll();
